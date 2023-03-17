@@ -1,11 +1,16 @@
 FROM node:18-alpine
 
-EXPOSE 3000
 
 WORKDIR /capweb
+COPY package.json .
 COPY . . /
 RUN  yarn
-RUN  yarn build
+
+EXPOSE 5173
+
+CMD [ "yarn", "dev" ]
+
+
 
 
 
