@@ -3,8 +3,10 @@ FROM node:16
 
 WORKDIR /capweb
 COPY package.json .
-COPY . . /
+
 RUN  yarn
+
+COPY . . 
 
 EXPOSE 5173
 
