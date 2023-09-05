@@ -8,14 +8,15 @@ import {ExclamationTriangleFill} from 'react-bootstrap-icons';
 import Toastify from "../../toastify";
 
 export default function main() {
-  const [to, setTO] = useState("");
+  const [to, setTo] = useState("");
   const [from, setFrom] = useState("");
   const [text, setText] = useState("");
   const [dates, setDates] = useState(() => new Date());
   const [balance, setBalance] = useState("0");
+  const emergence_boolean = true;
 
   const successNotify = () => 
-      toast.success('신고가 완료되었습니다!', {
+    toast.success('신고가 완료되었습니다!', {
       position: "top-right",
       autoClose: 3000,
       hideProgressBar: false,
@@ -24,9 +25,9 @@ export default function main() {
       draggable: true,
       progress: undefined,
       theme: "light",
-  });
+    });
   const errorNotify = () => 
-      toast.error('신고를 실패하였습니다!', {
+    toast.error('신고를 실패하였습니다!', {
       position: "top-right",
       autoClose: 3000,
       hideProgressBar: false,
@@ -35,15 +36,38 @@ export default function main() {
       draggable: true,
       progress: undefined,
       theme: "light",
-  });
+    });
+  const emergenceNotify = () => 
+    toast.error(
+      <>
+        {dates.toLocaleDateString()} {dates.toLocaleTimeString()} <br/>
+        위험이 감지되었습니다<br />
+        확인 부탁드립니다!
+      </>, 
+      {
+        position: "top-right",
+        autoClose: false,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      }
+    );
+  
 
   useEffect(() => {
+    if (emergence_boolean === true) {
+      emergenceNotify();
+    }
+
     const timeId = setInterval(() => tick(), 1000);
     getBalance();
     return () => {
       clearInterval(timeId);
     };
-  }, []);
+  }, [emergence_boolean]);
   
   const tick = () => {
     setDates(new Date());
@@ -63,7 +87,7 @@ export default function main() {
       
       successNotify()
       setFrom("");
-      setTO("");
+      setTo("");
       setText("");
     } catch (err) {
       errorNotify()
@@ -81,7 +105,7 @@ export default function main() {
     getBalance();
   };
   const onChangeTo = (e: any) => {
-    setTO(e.target.value);
+    setTo(e.target.value);
   };
   const onChangeFrom = (e: any) => {
     setFrom(e.target.value);
