@@ -1,26 +1,24 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-import {toast} from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import {ExclamationTriangleFill} from 'react-bootstrap-icons';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { ExclamationTriangleFill } from "react-bootstrap-icons";
 
 import Toastify from "../../toastify";
 
-import police_icon from '../../../assets/images/police.png';
-import hospital_icon from '../../../assets/images/hospital.png';
-import admin_icon from '../../../assets/images/admin.png';
+import police_icon from "../../../assets/images/police.png";
+import hospital_icon from "../../../assets/images/hospital.png";
+import admin_icon from "../../../assets/images/admin.png";
 
 export default function main() {
-  const [to, setTo] = useState("");
-  const [from, setFrom] = useState("");
-  const [text, setText] = useState("");
   const [dates, setDates] = useState(() => new Date());
+  const [key, setKeys] = useState("");
   const [balance, setBalance] = useState("0");
   const emergence_boolean = true;
 
-  const successNotify = () => 
-    toast.success('신고가 완료되었습니다!', {
+  const successNotify = () =>
+    toast.success("신고가 완료되었습니다!", {
       position: "top-right",
       autoClose: 3000,
       hideProgressBar: false,
@@ -30,8 +28,8 @@ export default function main() {
       progress: undefined,
       theme: "light",
     });
-  const errorNotify = () => 
-    toast.error('신고를 실패하였습니다!', {
+  const errorNotify = () =>
+    toast.error("신고를 실패하였습니다!", {
       position: "top-right",
       autoClose: 3000,
       hideProgressBar: false,
@@ -41,13 +39,14 @@ export default function main() {
       progress: undefined,
       theme: "light",
     });
-  const emergenceNotify = () => 
+  const emergenceNotify = () =>
     toast.error(
       <>
-        {dates.toLocaleDateString()} {dates.toLocaleTimeString()} <br/>
-        위험이 감지되었습니다<br />
+        {dates.toLocaleDateString()} {dates.toLocaleTimeString()} <br />
+        위험이 감지되었습니다
+        <br />
         확인 부탁드립니다!
-      </>, 
+      </>,
       {
         position: "top-right",
         autoClose: false,
@@ -59,7 +58,6 @@ export default function main() {
         theme: "colored",
       }
     );
-  
 
   useEffect(() => {
     if (emergence_boolean === true) {
@@ -72,7 +70,7 @@ export default function main() {
       clearInterval(timeId);
     };
   }, [emergence_boolean]);
-  
+
   const tick = () => {
     setDates(new Date());
   };
@@ -81,20 +79,14 @@ export default function main() {
     try {
       const response = await axios.get("http://localhost:8080", {
         params: {
-          To: to,
-          From: from,
-          Text: text,
+          Id: key,
         },
       });
       console.log(response);
       console.log(response.data);
-      
-      successNotify()
-      setFrom("");
-      setTo("");
-      setText("");
+      //      successNotify();
     } catch (err) {
-      errorNotify()
+      errorNotify();
       console.log(err);
     }
   };
@@ -105,26 +97,19 @@ export default function main() {
     setBalance(response.data.balance);
   };
   const onClick = (e: any) => {
-    //  sendRequest();
+    console.log(e.currentTarget);
+    setKeys(e.currentTarget.value);
+    sendRequest();
     getBalance();
   };
-  const onChangeTo = (e: any) => {
-    setTo(e.target.value);
-  };
-  const onChangeFrom = (e: any) => {
-    setFrom(e.target.value);
-  };
-  const onChangeText = (e: any) => {
-    setText(e.target.value);
-  };
-
+  console.log(key);
   return (
     <div className="w-fill mt-5 items-center">
       <div className="flex text-left gap-10">
         <div>{dates.toLocaleDateString()}</div>
         <div>{dates.toLocaleTimeString()}</div>
       </div>
-      <br/>
+      <br />
       <div className="flex h-max gap-20">
         <img
           className="w-4/6"
@@ -183,11 +168,12 @@ export default function main() {
           <button
             className="flex my-10 w-56 h-16 bg-light-red rounded-xl text-white items-center justify-center hover:border-transparent transition duration-500 ease-in-out hover:shadow-xl"
             onClick={onClick}
+            value="1"
           >
             <div className="flex gap-2.5">
-              <img src={hospital_icon} className='h-7 mx-2 my-3'/>
+              <img src={hospital_icon} className="h-7 mx-2 my-3" />
               <div className="my-2">
-                병원에 신고! <br/>
+                병원에 신고! <br />
                 To : 119
               </div>
             </div>
@@ -195,11 +181,12 @@ export default function main() {
           <button
             className="flex my-10 p-2 w-56 h-16 bg-blue-700 rounded-xl text-white items-center justify-center hover:border-transparent transition duration-500 ease-in-out hover:shadow-xl"
             onClick={onClick}
+            value="2"
           >
             <div className="flex gap-2.5">
-              <img src={police_icon} className='h-7 mx-2 my-3'/>
+              <img src={police_icon} className="h-7 mx-2 my-3" />
               <div className="my-2">
-                경찰에 신고! <br/>
+                경찰에 신고! <br />
                 To : 112
               </div>
             </div>
@@ -207,18 +194,19 @@ export default function main() {
           <button
             className="flex my-10 p-2 w-56 h-16 bg-slate-700 rounded-xl text-white items-center justify-center hover:border-transparent transition duration-500 ease-in-out hover:shadow-xl"
             onClick={onClick}
+            value="3"
           >
             <div className="flex gap-2.5">
-              <img src={admin_icon} className='h-7 mx-2 my-3'/>
+              <img src={admin_icon} className="h-7 mx-2 my-3" />
               <div className="my-2">
-                관리자에 신고! <br/>
+                관리자에 신고! <br />
                 To : 010-xxxx-xxxx
               </div>
             </div>
           </button>
         </div>
       </div>
-      <Toastify/>
+      <Toastify />
     </div>
   );
 }
